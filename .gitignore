@@ -1,0 +1,69 @@
+
+# Build output
+/target/
+/build/
+/out/
+
+# Maven
+/pom.xml.tag
+/pom.xml.releaseBackup
+/pom.xml.versionsBackup
+/release.properties
+/dependency-reduced-pom.xml
+/buildNumber.properties
+
+# Maven wrapper
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.swp
+*~
+~$*
+
+# Java
+*.class
+*.jar
+*.war
+*.ear
+
+
+
+
+# Spring Boot specific
+spring.log
+
+# OneDrive / syncing temporary files
+*.lnk
+
+# Misc
+coverage/
+.idea_modules/
+
+# Ignore generated resources in target/classes
+/target/classes/
+
+# Optional: ignore IDE run configs
+/.idea/runConfigurations/
+
+# End of file

@@ -1,0 +1,2 @@
+-- Data initialization disabled.
+-- Create data manually through the application UI.

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Audit Logs</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/api.js"></script>
+</head>
+
+<body onload="validateToken()">
+
+<div class="container card">
+
+    <h3>System Audit Logs</h3>
+
+    <button onclick="loadLogs()">Load Logs</button>
+
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Action</th>
+                <th>Description</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="logs"></tbody>
+    </table>
+
+</div>
+
+<script>
+async function loadLogs() {
+    const res = await fetch(API + "/audit/all", {
+        headers: authHeaders()
+    });
+
+    if (!res.ok) {
+        alert("Error loading audit logs: " + res.status);
+        return;
+    }
+
+    const logs = await res.json();
+
+    const table = document.getElementById("logs");
+    table.innerHTML = "";
+
+    for (let l of logs) {
+        const time = new Date(l.timestamp).toLocaleString();
+        table.innerHTML += `
+        <tr>
+            <td>${l.username}</td>
+            <td>${l.action}</td>
+            <td>${l.description || "N/A"}</td>
+            <td>${time}</td>
+        </tr>`;
+    }
+}
+</script>
+
+</body>
+</html>

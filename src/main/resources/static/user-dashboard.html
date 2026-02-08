@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/api.js"></script>
+    <script src="/js/user.js"></script>
+</head>
+
+<body onload="validateToken(); loadMyTickets();">
+
+<div class="container">
+
+    <div class="card">
+        <h3>Create Ticket</h3>
+
+        <input id="title" placeholder="Title">
+        <br>
+
+        <input id="description" placeholder="Description">
+        <br>
+
+        <button onclick="createTicket()">Create</button>
+    </div>
+
+    <div class="card">
+        <h3>My Tickets</h3>
+
+        <table>
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Description</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+
+            <tbody id="tickets"></tbody>
+        </table>
+    </div>
+
+    <div>
+        <a href="/ticket-history.html">Ticket History</a>
+        <a href="/login.html" style="margin-left: 20px;">Logout</a>
+    </div>
+
+</div>
+</body>
+</html>

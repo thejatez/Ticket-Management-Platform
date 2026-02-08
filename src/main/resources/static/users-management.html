@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Users Management</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/api.js"></script>
+</head>
+
+<body onload="validateToken(); loadAllUsers()">
+
+<div class="container card">
+
+    <h2>Users Management</h2>
+
+    <div style="margin-bottom: 15px;">
+        <a href="/admin-dashboard.html" style="padding: 8px 15px; background-color: #6c757d; color: white; text-decoration: none; border-radius: 4px;">Back to Dashboard</a>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Tickets</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody id="users"></tbody>
+    </table>
+
+</div>
+
+<script>
+    async function loadAllUsers() {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/admin/users', {
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        if (!response.ok) {
+            alert('Failed to load users');
+            return;
+        }
+
+        const users = await response.json();
+        const tbody = document.getElementById('users');
+        tbody.innerHTML = '';
+
+        for (const user of users) {
+            const row = document.createElement('tr');
+            
+            const actionBtn = user.role === 'ADMIN' ? 
+                '<button style="background-color: #6c757d; cursor: not-allowed;" disabled>Admin (Protected)</button>' :
+                `<button onclick="deleteUser(${user.id}, '${user.username}')" style="background-color: #dc3545; color: white; padding: 5px 10px; border: none; border-radius: 3px; cursor: pointer;">Delete User</button>`;
+
+            row.innerHTML = `
+                <td>${user.id}</td>
+                <td>${user.username}</td>
+                <td>${user.role}</td>
+                <td>${user.ticketCount}</td>
+                <td>${actionBtn}</td>
+            `;
+            tbody.appendChild(row);
+        }
+    }
+
+    async function deleteUser(userId, username) {
+        if (!confirm(`Are you sure you want to delete user '${username}'? This will also delete all their tickets.`)) {
+            return;
+        }
+
+        const token = localStorage.getItem('token');
+        const response = await fetch(`/admin/users/${userId}`, {
+            method: 'DELETE',
+            headers: { 'Authorization': 'Bearer ' + token }
+        });
+
+        if (response.ok) {
+            alert('User deleted successfully');
+            loadAllUsers();
+        } else {
+            alert('Failed to delete user');
+        }
+    }
+</script>
+
+</body>
+</html>

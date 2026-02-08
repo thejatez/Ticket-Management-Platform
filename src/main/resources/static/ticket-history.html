@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ticket History</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="/js/api.js"></script>
+</head>
+
+<body onload="validateToken(); initializeHistory();">
+
+<div class="container card">
+
+    <h3>Ticket History</h3>
+
+    <div style="margin-bottom: 15px;">
+        <input id="ticketId" placeholder="Ticket ID" style="padding: 8px; margin-right: 10px;">
+        <button onclick="loadHistory()" style="padding: 8px 15px;">Load</button>
+    </div>
+
+    <table border="1" style="width: 100%; margin-top: 20px; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th style="padding: 10px; text-align: left;">Action</th>
+                <th style="padding: 10px; text-align: left;">Performed By</th>
+                <th style="padding: 10px; text-align: left;">Details</th>
+                <th style="padding: 10px; text-align: left;">Timestamp</th>
+            </tr>
+        </thead>
+        <tbody id="historyTable">
+            <tr><td colspan="4" style="padding: 10px; text-align: center; color: #999;">No history loaded</td></tr>
+        </tbody>
+    </table>
+
+    <div style="margin-top: 15px;">
+        <a href="/user-dashboard.html" style="color: #333; text-decoration: underline;">← Back to Dashboard</a>
+    </div>
+
+</div>
+
+<script>
+async function initializeHistory() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const ticketId = urlParams.get('id');
+
+    if (ticketId) {
+        document.getElementById("ticketId").value = ticketId;
+        await loadHistory();
+    }
+}
+
+async function loadHistory() {
+
+    const id = document.getElementById("ticketId").value;
+
+    if (!id) {
+        alert("Please enter a Ticket ID");
+        return;
+    }
+
+    try {
+        const res = await fetch(API + "/audit/ticket/" + id, {
+            headers: authHeaders()
+        });
+
+        if (!res.ok) {
+            alert("Failed to load ticket history");
+            return;
+        }
+
+        const logs = await res.json();
+
+        if (!logs || logs.length === 0) {
+            document.getElementById("historyTable").innerHTML = "<tr><td colspan='4' style='padding: 10px; text-align: center; color: #999;'>No history found</td></tr>";
+            return;
+        }
+
+        const tbody = document.getElementById("historyTable");
+        tbody.innerHTML = "";
+
+        for (let l of logs) {
+            const performedBy = l.username || "Unknown";
+            const row = tbody.insertRow();
+            row.innerHTML = `
+                <td style="padding: 10px; border: 1px solid #ddd;"><strong>${l.action}</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">${performedBy}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">${l.description}</td>
+                <td style="padding: 10px; border: 1px solid #ddd;">${l.timestamp}</td>
+            `;
+        }
+    } catch (error) {
+        console.error("Error loading history:", error);
+        alert("Error loading ticket history");
+    }
+}
+</script>
+
+</body>
+</html>
